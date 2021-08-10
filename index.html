@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset=UTF-8>
+    <meta http-equiv=X-UA-Compatible content="IE=edge">
+    <meta name=viewport content="width=device-width, initial-scale=1.0">
+    <link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans|Ranchers|Lobster">
+    <link rel="shortcut icon" type="image/x-icon" href="csicon2.png">
+    <title>Trabalho</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.js"></script>
+    <link rel=stylesheet href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel=stylesheet href="style.css">
+</head>
+<body>
+    <div class=mensExcl>
+        <div>
+            <p class=mensExcl__title>Wow! Espere um pouco...</p>
+            <p>Você clicou para excluir um elemento.<b class=mensR> Além disso, uma partida que tiver ele como único elemento será automaticamente excluído também!</b> Tem certeza que deseja excluí-lo?</p>
+            <div class=mensExcl__img>
+                <img src="right.png" id=exclImg>
+                <img src="wrong.png" id=notExclImg>
+            </div>
+        </div>
+    </div>
+    <header>
+        <section class=sectCentr>
+            <p class=title>Counter Strike</p>
+            <div class=divid></div>
+            <p class=compl>Global Offensive</p>
+            <article class=artcSeta>
+                <img src="seta.png">
+            </article>
+        </section>
+        <section class=bckHeader></section>
+    </header>
+    <main>
+        <section class=menu>
+            <img src="csicon.png" class=menu__icon>
+            <article class=marcador>
+                <div></div>
+            </article>
+        </section>
+        <section id=app>
+            <article id=formR class=form>
+                <aside>
+                    <div class=form__bck></div>
+                    <div class=form__form>
+                        <p class=form__title>Round</p>
+                        <div class=centraliz>
+                            <div class=form-group>
+                                <label>Data do início <img src="clear.png" class=limpar></label>
+                                <input type=date class="form-control entrada" v-model=newR[0]>
+                                <div class=pErro>O campo é obrigatório, mas está vazio!</div>
+                            </div>
+                            <div class=form-group>
+                                <label><b id=data2>Data do fim</b> <img src="clear.png" class=limpar></label>
+                                <input type=date class="form-control entrada" v-model=newR[1]>
+                                <div class=pErro>O campo é obrigatório, mas está vazio!</div>
+                            </div>
+                            <div class=form-group>
+                                <label>Quantidade de assistência <img src="clear.png" class=limpar></label>
+                                <input type=number placeholder="Insira aqui" class="form-control entrada" v-model=newR[2] min=0 max=50>
+                                <div class=pErro>O campo é obrigatório, mas está vazio!</div>
+                            </div>
+                            <div class=form-group>
+                                <label>Quantidade de mortes <img src="clear.png" class=limpar></label>
+                                <input type=number placeholder="Insira aqui" class="form-control entrada" v-model=newR[3] min=0 max=100>
+                                <div class=pErro>O campo é obrigatório, mas está vazio!</div>
+                            </div>
+                            <div class=form-group>
+                                <label>Quantidade de vítimas <img src="clear.png" class=limpar></label>
+                                <input type=number placeholder="Insira aqui" class="form-control entrada" v-model=newR[4] min=0 max=100>
+                                <div class=pErro>O campo é obrigatório, mas está vazio!</div>
+                            </div>
+                            <div class=form-group>
+                                <label>Quantidade de tentativas <img src="clear.png" class=limpar></label>
+                                <input type=number placeholder="Insira aqui" class="form-control entrada" v-model=newR[5] min=0 max=100>
+                                <div class=pErro>O campo é obrigatório, mas está vazio!</div>
+                            </div>
+                            <div class=form-group>
+                                <label>Pontos <img src="clear.png" class=limpar></label>
+                                <input type=number placeholder="Insira aqui" class="form-control entrada" v-model=newR[6] min=0 max=1000>
+                                <div class=pErro>O campo é obrigatório, mas está vazio!</div>
+                            </div>
+                            <div class=form-group>
+                                <label>Objetivos <img src="clear.png" class=limpar></label>
+                                <select multiple class="form-control entrada" v-model=newR[7]>
+                                    <option v-for="o in objetivos" v-bind:value="o.id">{{ o.objetivo }}</option>
+                                </select>
+                                <div class=pErro>Selecione, pelo menos, uma opção!</div>
+                            </div>
+                        </div>
+                        <p>
+                            <button @click="editOrAddRound" id=round class="btn btn-primary btnForm">Adicionar round</button>
+                            <button @click="clearRound" class="btn btn-warning btnForm">Recomeçar formulário!</button>
+                            <button @click="cancelEditRound" id=cancelRound class="btn btn-success btnForm">Cancelar edição</button>
+                        </p>
+                    </div>
+                </aside>
+                <table class=table>
+                    <thead>
+                        <tr class=firstLine>
+                            <td>#</td>
+                            <td>Data do início</td>
+                            <td>Data do fim</td>
+                            <td>Quant. assistência</td>
+                            <td>Quant. mortes</td>
+                            <td>Quant. vítimas</td>
+                            <td>Quant. tentativas</td>
+                            <td>Pontos</td>
+                            <td>Objetivos</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(j, index) in allR" v-if="idR[index] == editR" style="background: rgb(30,30,30)">
+                            <td>{{idR[index]}}</td>
+                            <td>{{j[0].split('-')[2]}}/{{j[0].split('-')[1]}}/{{j[0].split('-')[0]}}</td>
+                            <td>{{j[1].split('-')[2]}}/{{j[1].split('-')[1]}}/{{j[1].split('-')[0]}}</td>
+                            <td>{{j[2]}}</td>
+                            <td>{{j[3]}}</td>
+                            <td>{{j[4]}}</td>
+                            <td>{{j[5]}}</td>
+                            <td>{{j[6]}}</td>
+                            <td class=left>
+                                <ul>
+                                    <li v-for="b in j[7]">{{showObj(b)}}</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <span title="Editar item"><img src="editar.png" class=iconLinha @click="editRound(idR[index])"></span>
+                                <span title="Excluir item"><img src="excluir.png" class=iconLinha @click="exclRound(idR[index])"></span>
+                            </td>
+                        </tr>
+                        <tr v-for="(j, index) in allR" v-if="idR[index] !== editR">
+                            <td>{{idR[index]}}</td>
+                            <td>{{j[0].split('-')[2]}}/{{j[0].split('-')[1]}}/{{j[0].split('-')[0]}}</td>
+                            <td>{{j[1].split('-')[2]}}/{{j[1].split('-')[1]}}/{{j[1].split('-')[0]}}</td>
+                            <td>{{j[2]}}</td>
+                            <td>{{j[3]}}</td>
+                            <td>{{j[4]}}</td>
+                            <td>{{j[5]}}</td>
+                            <td>{{j[6]}}</td>
+                            <td class=left>
+                                <ul>
+                                    <li v-for="b in j[7]">{{showObj(b)}}</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <span title="Editar item"><img src="editar.png" class=iconLinha @click="editRound(idR[index])"></span>
+                                <span title="Excluir item"><img src="excluir.png" class=iconLinha @click="exclRound(idR[index])"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </article>
+            <article id=formP class=form>
+                <aside>
+                    <div class=form__bck></div>
+                    <div class=form__form>
+                        <p class=form__title>Partida</p>
+                        <div class=centraliz>
+                            <div class=form-group>
+                                <label>Data do início <img src="clear.png" class=limpar></label>
+                                <input type=date class="form-control entrada" v-model=newP[0]>
+                                <div class=pErro>O campo é obrigatório, mas está vazio!</div>
+                            </div>
+                            <div class=form-group>
+                                <label>Data do fim <img src="clear.png" class=limpar></label>
+                                <input type=date class="form-control entrada" v-model=newP[1]>
+                                <div class=pErro>O campo é obrigatório, mas está vazio!</div>
+                            </div>
+                            <div class=form-group id=groupR>
+                                <label>Rounds <img src="clear.png" class=limpar></label>
+                                <select class="form-control entrada" multiple v-model=newP[2]>
+                                    <option v-for="r in idRNotAdd" v-bind:value="r">Round de id {{ r }}</option>
+                                </select>
+                                <div class=pErro id=eSlct>Selecione, pelo menos, uma opção!</div>
+                            </div>
+                            <div class=form-group>
+                                <label>Pessoas <img src="clear.png" class=limpar></label>
+                                <select class="form-control entrada" v-model=newP[3]>
+                                    <option v-for="p in pessoas" v-bind:value="p.id">{{ p.nome }}</option>
+                                </select>
+                                <div class=pErro>Selecione, pelo menos, uma opção!</div>
+                            </div>
+                        </div>
+                        <p>
+                            <button @click="editOrAddPartida" id=partida class="btn btn-primary btnForm">Adicionar partida</button>
+                            <button @click="clearPartida" class="btn btn-warning btnForm">Recomeçar formulário!</button>
+                            <button @click="cancelEditPartida(true)" id=cancelPartida class="btn btn-success btnForm">Cancelar edição</button>
+                        </p>
+                    </div>
+                </aside>
+                <table class=table>
+                    <thead>
+                        <tr class=firstLine>
+                            <td>#</td>
+                            <td>Data do início</td>
+                            <td>Data do fim</td>
+                            <td>Rounds</td>
+                            <td>Pessoa</td>
+                            <td></td>
+                        </tr>
+                        <tbody>
+                            <tr v-for="(j, index) in allP" v-if="idP[index] == editP" style="background: rgb(30,30,30)">
+                                <td>{{idP[index]}}</td>
+                                <td>{{j[0].split('-')[2]}}/{{j[0].split('-')[1]}}/{{j[0].split('-')[0]}}</td>
+                                <td>{{j[1].split('-')[2]}}/{{j[1].split('-')[1]}}/{{j[1].split('-')[0]}}</td>
+                                <td class=left>
+                                    <ul>
+                                        <li v-for="t in j[2]">Round de id {{t}}</li>
+                                    </ul>
+                                </td>
+                                <td>{{showPerson(j[3])}}</td>
+                                <td>
+                                    <span title="Editar item"><img src="editar.png" class=iconLinha @click="editPartida(idP[index])"></span>
+                                    <span title="Excluir item"><img src="excluir.png" class=iconLinha @click="exclPartida(idP[index])"></span>
+                                </td>
+                            </tr>
+                            <tr v-for="(j, index) in allP" v-if="idP[index] !== editP">
+                                <td>{{idP[index]}}</td>
+                                <td>{{j[0].split('-')[2]}}/{{j[0].split('-')[1]}}/{{j[0].split('-')[0]}}</td>
+                                <td>{{j[1].split('-')[2]}}/{{j[1].split('-')[1]}}/{{j[1].split('-')[0]}}</td>
+                                <td class=left>
+                                    <ul>
+                                        <li v-for="t in j[2]">Round de id {{t}}</li>
+                                    </ul>
+                                </td>
+                                <td>{{showPerson(j[3])}}</td>
+                                <td>
+                                    <span title="Editar item"><img src="editar.png" class=iconLinha @click="editPartida(idP[index])"></span>
+                                    <span title="Excluir item"><img src="excluir.png" class=iconLinha @click="exclPartida(idP[index])"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </thead>
+                </table>
+            </article>
+        </section>
+    </main>
+</body>
+<script src="index.js"></script>
+</html>
